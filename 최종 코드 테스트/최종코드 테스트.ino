@@ -225,5 +225,5 @@ if(Serial.available()) {     // 시리얼 통신이 연결되어 있을 시
   }else{
     Serial.println("Wrong input value");
   }
-}
+ }
 }
