@@ -1,0 +1,40 @@
+/*캡스톤디자인 선박 침몰 감지 및 지연 모듈
+1.기본적인 코딩 틀 LED(에어백) 제어 ,LCD
+기울기 PIN 4개,물감지 PIN 3개, LED 핀 6개 */
+
+#include <Wire.h>                   //I2C 통신 라이브라리
+#include <LiquidCrystal_I2C.h>      //LiquidCrystal 디스플레이(LCD) 제어 라이브러리
+LiquidCrystal_I2C lcd(0x27,16,2)   //LCD객체 생성 (I2C 주소는 LCD에 맞게 수정)
+
+int incline=0;                      //기울기 초기화
+int led[6]={8,9,10,11,12,13};       //디지털 핀 8,9,10,11,12,13을 led에 배열로 지정
+
+
+void setup() {
+  Serial.begin(9600);               //시리얼 모니터 설정
+  
+  for(int i=0;i<6;i++){
+    pinMode(led[i],OUTPUT);
+  }
+  lcd.init();                       //I2C LCD 초기화
+  lcd.backlight();                  //I2C LCD의 백라이트
+}
+
+void loop() {
+  if(incline > 20){                 //기울기 20도 이상인 경우
+    lcd.clear();                    //LCD 모든 내용 삭제
+    lcd.setCursor(0,0);             //LCD 출력 위치 (0번째 줄 0번째 셀부터 입력)
+    lcd.print("DANGER");            //LCD에 DANGER 출력
+    delay(5000);
+
+  for(int i=0; i<6;i++){            //LED(에어백) 제어문 
+    digitalWrite(led[i],HIGH);      //LED(에어백) 점등
+    delay(5000);                    //LED 5초간 지연
+   } 
+    
+  }else{                            //기울기 20도 이하인 경우
+    lcd.setCursor(0,0);             //LCD 출력위치 (0번째 줄 0번째 셀부터 입력)
+    lcd.print("NORMAL");            //LCD에 NORMAL 출력
+    delay(5000);                    //LCD 5초간 지연
+  }   
+}
