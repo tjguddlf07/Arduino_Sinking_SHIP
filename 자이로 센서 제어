@@ -1,0 +1,65 @@
+#include "Wire.h"
+#include "I2Cdev.h"
+#include "MPU9250.h"
+
+MPU9250 accelGyroMag;
+
+int16_t AcX,A cY,AcZ;
+int16_t GyX,GyY,GyZ;
+int16_t MgX,MgY,MgZ;
+
+double rollGyro,pitchGyro,yawZ;
+double rollAcc,pitchAcc,yawXY;
+double pitch=0, roll=0, yaw=0;
+float DT = 0.01;
+
+
+
+void setup() {
+  Wire.begin();
+  accelGyroMag.initialize();
+}
+
+void loop() {
+  accelGyroMag.getMotion9(&AcX,&AcY,&AcZ,&GyX,&GyY,&GyZ,&MgX,&MgY,&MgZ);
+  
+  //Serial.print(MgX); Serial.print(" ");
+  //Serial.print(MgY); Serial.print(" ");
+  //Serial.print(MgZ); Serial.println(" ");
+  
+  //가속도 계산
+  pitchAcc = atan2(AcY,AcZ)*180/PI; // 라디안 to 각도값
+  rollAcc = -atan2(AcX,AcZ)*180/PI;
+  
+  //자이로 계산
+  pitchGyro = GyX/131.07; // 16비트 값 to 250'/sec
+  rollGyro = GyY/131.07;
+  
+  //상보필터
+  pitch = (0.98*(pitch+(pitchGyro*DT)))+(0.02*pitchAcc);
+  roll = (0.98*(roll+(rollGyro*DT)))+(0.02*rollAcc);
+  
+  //yaw 계산
+  yaw = atan2(MgY,MgX)*180/PI+180;
+  
+  //Serial.print("pitch: "); Serial.print(pitch);
+  //Serial.print(" roll: "); Serial.print(roll);
+  //Serial.print(" yaw: "); Serial.println(yaw);
+
+  if(yaw <= 20){
+   lcd.setCursor(0,0);             //LCD 출력위치 Top Left  
+    lcd.print("SAFE");              //LCD에 SAFE 출력
+    delay(5000);                    //LCD 5초간 지연
+
+  }else {
+   lcd.clear();                    //LCD 모든 내용 삭제
+    lcd.setCursor(0,0);             //LCD 출력 위치 Top Left
+    lcd.print("DANGER");            //LCD에 DANGER 출력
+    delay(5000);                    //LCD 5초간 지연
+    
+    for(int i=0; i<6;i++){          //LED(에어백) 제어문              
+    digitalWrite(led[i],HIGH);      //LED(에어백) 점등
+    delay(5000);                    //LED 5초간 지연     
+  }
+  }
+}
