@@ -1,0 +1,111 @@
+#include <Wire.h>                  	        //I2C 통신 라이브라리
+#include <LiquidCrystal_I2C.h>      //LiquidCrystal 디스플레이(LCD) 제어 라이브러리
+LiquidCrystal_I2C lcd(0x27,16,2)   //LCD객체 생성 (I2C 주소는 LCD에 맞게 수정)
+
+int led[6]={8,9,10,11,12,13};           //디지털 핀 8,9,10,11,12,13을 led에 배열로 지정
+
+int water_pin1=A0;
+int water_pin2=A1;
+int water_pin3=A2;
+//물감지 센서 3개 선언 & 변수와 핀 연결
+
+void setup() {
+  Serial.begin(9600);               //시리얼 모니터 설정
+  
+  for(int i=0;i<6;i++){
+    pinMode(led[i],OUTPUT);
+  }
+  lcd.init();                       //I2C LCD 초기화
+  lcd.backlight();                  //I2C LCD의 백라이트
+}
+
+void loop(){
+  int val1=analogRead(A0);          //수분수위센서값을 'val1'에 저장
+  int val2=analogRead(A1);          //수분수위센서값을 'val1'에 저장
+  int val3= analogRead(A2);         //수분수위센서값을 'Val3'에 저장
+  
+  Serial.println(val1);         
+  Serial.println(val2);
+  Serial.println(val3);
+  //센서 값을 시리얼 모니터에 출력
+  delay(100);
+  
+  if(0 < val1 && val1 <= 100){     //전방수위센서 값이 0~100이하인 경우
+    lcd.setCursor(0,1);             //LCD 출력위치 Bottom Left  
+    lcd.print("SAFE");              //LCD에 SAFE 출력
+    delay(5000);                    //LCD 5초간 지연
+    
+ }else if(100 < val1 && val1 <= 150){//전방수위센서 값이 100~150이하인 경우
+    lcd.clear();                    //LCD 모든 내용 삭제
+    lcd.setCursor(0,1);             //LCD 출력 위치 Bottom Left
+    lcd.print("DANGER");            //LCD에 DANGER 출력
+    delay(5000);                    //LCD 5초간 지연
+    
+    for(int i=0; i<6;i++){          //LED(에어백) 제어문              
+    digitalWrite(led[i],HIGH);      //LED(에어백) 점등
+    delay(5000);                    //LED 5초간 지연     
+  }
+ }else {                            //전방수위센서 값이 150을 초과하는 경우
+    lcd.clear();                    //LCD 모든 내용 삭제
+    lcd.setCursor(0,1);             //LCD 출력 위치 Bottom Left
+    lcd.print("EMERGENCY");         //LCD에 EMERGENCY 출력
+    delay(5000);                    //LCD 5초간 지연
+
+  for(int i=0; i<6;i++){            //LED(에어백) 제어문              
+    digitalWrite(led[i],HIGH);      //LED(에어백) 점등
+    delay(5000);                    //LED 5초간 지연     
+  }    
+ }
+  if(0 < val2 && val2 <= 100){      //중앙수위센서 값이 0~100이하인 경우
+    lcd.setCursor(0,1);             //LCD 출력위치 Bottom Left   
+    lcd.print("SAFE");              //LCD에 SAFE 출력
+    delay(5000);                    //LCD 5초간 지연
+    
+ }else if(100 < val2 && val2 <= 150){//중앙수위센서 값이 100~150이하인 경우
+    lcd.clear();                    //LCD 모든 내용 삭제
+    lcd.setCursor(0,1);             //LCD 출력 위치 Bottom Left
+    lcd.print("DANGER");            //LCD에 DANGER 출력
+    delay(5000);                    //LCD 5초간 지연
+    
+    for(int i=0; i<6;i++){          //LED(에어백) 제어문              
+    digitalWrite(led[i],HIGH);      //LED(에어백) 점등
+    delay(5000);                    //LED 5초간 지연     
+  }
+ }else {                            //중앙수위센서 값이 150을 초과하는 경우
+    lcd.clear();                    //LCD 모든 내용 삭제
+    lcd.setCursor(0,1);             //LCD 출력 위치 Bottom Left
+    lcd.print("EMERGENCY");         //LCD에 EMERGENCY 출력
+    delay(5000);                    //LCD 5초간 지연
+
+  for(int i=0; i<6;i++){            //LED(에어백) 제어문              
+    digitalWrite(led[i],HIGH);      //LED(에어백) 점등
+    delay(5000);                    //LED 5초간 지연     
+  }    
+ }
+ if(0 < val3 && val3 <= 100){       //전방수위센서 값이 0~100이하인 경우
+    lcd.setCursor(0,1);             //LCD 출력위치 Bottom Left  
+    lcd.print("SAFE");              //LCD에 SAFE 출력
+    delay(5000);                    //LCD 5초간 지연
+    
+ }else if(100 < val3 && val3 <= 150){//후방수위센서 값이 100~150이하인 경우
+    lcd.clear();                    //LCD 모든 내용 삭제
+    lcd.setCursor(0,1);             //LCD 출력 위치 Bottom Left
+    lcd.print("DANGER");            //LCD에 DANGER 출력
+    delay(5000);                    //LCD 5초간 지연
+    
+    for(int i=0; i<6;i++){          //LED(에어백) 제어문              
+    digitalWrite(led[i],HIGH);      //LED(에어백) 점등
+    delay(5000);                    //LED 5초간 지연     
+  }
+ }else {                            //후방수위센서 값이 150을 초과하는 경우
+    lcd.clear();                    //LCD 모든 내용 삭제
+    lcd.setCursor(0,1);             //LCD 출력 위치 Bottom Left
+    lcd.print("EMERGENCY");         //LCD에 EMERGENCY 출력
+    delay(5000);                    //LCD 5초간 지연
+
+  for(int i=0; i<6;i++){            //LED(에어백) 제어문              
+    digitalWrite(led[i],HIGH);      //LED(에어백) 점등
+    delay(5000);                    //LED 5초간 지연     
+  }    
+ }  
+}
