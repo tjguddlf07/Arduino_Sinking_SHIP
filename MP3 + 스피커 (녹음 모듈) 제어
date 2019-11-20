@@ -1,0 +1,68 @@
+/*ISD1820 녹음 모듈 + 스피커 제어
+
+1. 
+REC : 누르고 있는 동안 녹음을 진행합니다 녹음은 약 10초가량 가능합니다.
+PLAYE : 한번 누르면 녹음된 음성이 재생됩니다.
+PLAYL : 누르고 있는동안 녹음된 음성이 재생됩니다.
+
+2.
+FT : Feed Throgh, MIC에 음성을 넣으면 스피커로 바로 출력됩니다.
+P-L : PLAYL 작업을 할 수 있는 핀 입니다.
+P-E : PLAYE 작업을 할 수 있는 핀입니다.
+REC : REC 작업을 할 수 있는 핀입니다.
+
+
+모니터 창에서 R을 치면 'REC', E를 치면 'PLAYE', F를 치면 'FT', S를 치면 '녹음중지'로 동작하는 코드 입니다.
+
+MP3 녹음 모듈, 스피커 제어*/
+
+int PLAYE1 = 4; //내부음
+int PLAYE2 = 5; //외부음
+
+int FT1 = 6;    //내부음 스피커
+int FT2 = 7;    //외부음 스피커
+
+int command;                                    // 시리얼 모니터의 명령을 받아들이는 변수
+
+void setup() {
+  Serial.begin(9600);                          // 시리얼 통신, 속도는 9600
+  pinMode(PLAYE1,OUTPUT);                       // playe를 출력으로
+  pinMode(PLAYE2,OUTPUT);
+  pinMode(FT1,OUTPUT);
+  pinMode(FT2,OUTPUT);
+  Serial.println("*********command*********");  // MP3 모듈 제어 명령
+  Serial.println("1. record 10sec");            // 1. 녹음 10초
+  Serial.println("2. play ");                   // 2. 재생
+    
+}
+
+void loop() {
+   if(Serial.available()) {     // 시리얼 통신이 연결되어 있을 시  
+    command=Serial.read();
+    
+    if(command == 'E') {
+      digitalWrite(PLAYE1,HIGH);
+      digitalWrite(PLAYE2,HIGH);
+      
+      //Serial.println("P1");
+      //Serial.println("P2");
+      delay(10000);
+      
+      digitalWrite(PLAYE1,LOW);
+      digitalWrite(PLAYE2,LOW);
+      
+  }else if(command == 'F'){
+      digitalWrite(FT1,HIGH);
+      digitalWrite(FT2,HIGH);
+      
+      //Serial.println("P1");
+      //Serial.println("P2");
+      delay(10000);
+      
+      digitalWrite(FT1,LOW);
+      digitalWrite(FT2,LOW);   
+  }else{
+    Serial.println("Wrong input value");
+  }
+ }
+}
