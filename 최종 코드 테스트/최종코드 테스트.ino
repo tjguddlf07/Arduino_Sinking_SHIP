@@ -1,6 +1,17 @@
 /*Digital : 2,3 자이로 센서 (SCL,SDA)
   Analog  : 0,1,2 : 물감지 센서
-  Digital : 4,5,6,7 : 녹음
+  Digital : 내부 구조음 MP3 모듈
+  XRST 22번
+  XCS 23번 
+  DREQ 24번
+  XDCS 25번
+  Digital : 외부 구조음 MP3 모듈
+  XRST 28번
+  XCS 29번
+  DREQ 30번
+  XDCS 31번
+  Digital : 4,6 : 내부 스피커
+  Digital : 5,7: 외부 스피커
   Digital : 8,9,10,11,12,13 : LED
   Analog  : 4,5 : LCD*/
 
@@ -34,9 +45,6 @@ int PLAYE2 = 5; //외부음
 
 int FT1 = 6;    //내부음 스피커
 int FT2 = 7;    //외부음 스피커
-
-
-
 
 int led[6]={8,9,10,11,12,13};       //디지털 핀 8,9,10,11,12,13을 led에 배열로 지정
 
@@ -225,5 +233,5 @@ if(Serial.available()) {     // 시리얼 통신이 연결되어 있을 시
   }else{
     Serial.println("Wrong input value");
   }
- }
+}
 }
